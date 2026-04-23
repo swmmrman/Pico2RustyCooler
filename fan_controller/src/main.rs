@@ -31,25 +31,29 @@ async fn main(_spawner: Spawner) {
         Output::new(p.PIN_12, Level::Low),
         Output::new(p.PIN_13, Level::Low),
     ];
-    let base_time = 1;
+    let base_time = 0;
+    let max_time = 10000;
     let mut c = 0;
     let mut time_on = base_time;
+    let mut time_off = max_time - base_time;
     loop {
         for led in &mut leds {
             led.set_high();
-            Timer::after_micros(time_on).await;
         }
+        Timer::after_micros(time_on).await;
         for led in &mut leds {
             led.set_low();
-            Timer::after_micros(1000).await;
-            c += 1;
-            if c > 10 {
-                time_on += 1;
-                c = 0;
-            }
-            if time_on > 1000 {
-                time_on = base_time;
-            }
+        }
+        Timer::after_micros(time_off).await;
+        c += 1;
+        if c > 2 {
+            time_on += 1;
+            time_off -= 1;
+            c = 0;
+        }
+        if time_on == max_time {
+            time_on = base_time;
+            time_off = max_time - base_time;
         }
     }
 }
