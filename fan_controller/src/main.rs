@@ -32,6 +32,7 @@ async fn main(_spawner: Spawner) {
         Output::new(p.PIN_13, Level::Low),
     ];
     let base_time = 1;
+    let mut c = 0;
     let mut time_on = base_time;
     loop {
         for led in &mut leds {
@@ -39,7 +40,11 @@ async fn main(_spawner: Spawner) {
             Timer::after_micros(time_on).await;
             led.set_low();
             Timer::after_micros(1000).await;
-            time_on += 1;
+            c += 1;
+            if c > 10 {
+                time_on += 1;
+                c = 0;
+            }
             if time_on > 1000 {
                 time_on = base_time;
             }
