@@ -38,6 +38,8 @@ async fn main(_spawner: Spawner) {
         for led in &mut leds {
             led.set_high();
             Timer::after_micros(time_on).await;
+        }
+        for led in &mut leds {
             led.set_low();
             Timer::after_micros(1000).await;
             c += 1;
